@@ -498,6 +498,11 @@
 /* ============================================================
    MOBILE IMPROVEMENTS
    ============================================================ */
+/* Enable long-press context menu on mobile */
+.ot-task-row {
+  -webkit-touch-callout: default;
+}
+
 @media (pointer: coarse) {
   .ot-task-row {
     min-height: 44px;

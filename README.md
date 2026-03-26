@@ -36,6 +36,8 @@ There are three ways to add tasks:
    ```
    The task appears on the board automatically.
 
+   **Syntax notes**: The `#task` tag must be at the **end of the line** -- no text after it, or the plugin won't detect the task. If you include multiple `[[wikilinks]]`, only the first one is used for secondary grouping; the rest are stripped from the task text.
+
 2. **From the board** -- Click **+ Add a task** at the bottom of any bucket. Type the task text, optionally pick a secondary group, and press Enter.
 
 3. **Stub files** -- Create a markdown file in the configured task folder with the appropriate frontmatter. The plugin picks it up on the next scan.

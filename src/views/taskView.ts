@@ -43,7 +43,7 @@ export class TaskView extends ItemView {
     });
 
     this.checkboxHandler = new CheckboxHandler({
-      onToggleDone: (file) => this.store.toggleDone(file),
+      onToggleDone: (file) => this.store.toggleDoneWithSync(file),
     });
 
     this.inlineCreator = new InlineCreator(this.app, settings);
@@ -238,6 +238,15 @@ export class TaskView extends ItemView {
       },
       onDrop: (event: DragEvent, bucketName: string) => {
         this.dragManager.handleDrop(event, bucketName);
+      },
+      onContextMenu: (task: TaskItem, event: MouseEvent) => {
+        const menu = new Menu();
+        for (const bucket of this.settings().buckets) {
+          menu.addItem((item) =>
+            item.setTitle(bucket.name).onClick(() => this.store.moveToBucket(task.file, bucket.name))
+          );
+        }
+        menu.showAtMouseEvent(event);
       },
     };
   }

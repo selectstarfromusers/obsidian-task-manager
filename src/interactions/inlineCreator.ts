@@ -139,7 +139,12 @@ export class InlineCreator {
     const prefix = secondaryGroup
       ? secondaryGroup.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").toLowerCase()
       : "task";
-    const fileName = `${folder}/${prefix}-${dateStamp}-${timeStamp}.md`;
+    let baseName = `${prefix}-${dateStamp}-${timeStamp}`;
+    let fileName = `${folder}/${baseName}.md`;
+    if (this.app.vault.getAbstractFileByPath(fileName)) {
+      const suffix = Math.random().toString(36).substring(2, 5);
+      fileName = `${folder}/${baseName}-${suffix}.md`;
+    }
 
     const today = now.toISOString().split("T")[0];
     const groupProp = s.secondaryGroupProperty;

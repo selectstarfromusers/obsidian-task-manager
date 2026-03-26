@@ -4,6 +4,7 @@ export interface TaskRowCallbacks {
   onToggleDone(task: TaskItem): void;
   onDragStart(task: TaskItem, event: DragEvent): void;
   onClick(task: TaskItem): void;
+  onContextMenu?(task: TaskItem, event: MouseEvent): void;
 }
 
 const SOURCE_ICONS: Record<string, string> = {
@@ -143,6 +144,14 @@ export function createTaskRow(
   // Events
   row.addEventListener("click", () => callbacks.onClick(task));
   row.addEventListener("dragstart", (e) => callbacks.onDragStart(task, e));
+
+  // Context menu for "Move to..." bucket
+  row.addEventListener("contextmenu", (e) => {
+    if (callbacks.onContextMenu) {
+      e.preventDefault();
+      callbacks.onContextMenu(task, e);
+    }
+  });
 
   // P2: Keyboard handler — Enter/Space triggers toggle, arrow keys left to parent
   row.addEventListener("keydown", (e) => {

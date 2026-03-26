@@ -265,6 +265,36 @@ export class TaskStore {
     });
   }
 
+  async toggleDoneWithSync(file: TFile): Promise<void> {
+    let newDone = false;
+    await this.app.fileManager.processFrontMatter(file, (fm) => {
+      fm.done = !fm.done;
+      newDone = fm.done;
+    });
+
+    // Sync checkbox back to the source note for inline tasks
+    const cache = this.app.metadataCache.getFileCache(file);
+    const fm = cache?.frontmatter;
+    if (fm?.source === "inline" && fm?.source_file) {
+      const sourceFile = this.app.vault.getAbstractFileByPath(fm.source_file);
+      if (sourceFile instanceof TFile) {
+        const lineNum = fm.source_line;
+        if (typeof lineNum === "number") {
+          const content = await this.app.vault.read(sourceFile);
+          const lines = content.split("\n");
+          if (lineNum >= 0 && lineNum < lines.length) {
+            if (newDone) {
+              lines[lineNum] = lines[lineNum].replace(/\[ \]/, "[x]");
+            } else {
+              lines[lineNum] = lines[lineNum].replace(/\[[xX]\]/, "[ ]");
+            }
+            await this.app.vault.modify(sourceFile, lines.join("\n"));
+          }
+        }
+      }
+    }
+  }
+
   async moveToBucket(file: TFile, bucketName: string): Promise<void> {
     const settings = this.getSettings();
     // P1: Normalize property name to lowercase

@@ -72,7 +72,13 @@ export class TasksSettingTab extends PluginSettingTab {
           .setPlaceholder(DEFAULT_SETTINGS.bucketProperty)
           .setValue(this.plugin.settings.bucketProperty)
           .onChange(async (value) => {
-            this.plugin.settings.bucketProperty = value.toLowerCase().trim();
+            const newValue = value.toLowerCase().trim();
+            if (newValue !== this.plugin.settings.bucketProperty) {
+              new Notice(
+                "Changing the bucket property will affect how tasks are grouped. Existing tasks may appear in 'Unclassified' until their frontmatter is updated."
+              );
+            }
+            this.plugin.settings.bucketProperty = newValue;
             await this.plugin.saveSettings();
           })
       );

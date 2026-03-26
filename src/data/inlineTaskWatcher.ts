@@ -199,7 +199,7 @@ export class InlineTaskWatcher {
     });
   }
 
-  private generateStubFilename(secondaryValue: string): string {
+  private generateStubFilename(secondaryValue: string, folder: string): string {
     const now = new Date();
     const yyyy = now.getFullYear();
     const MM = String(now.getMonth() + 1).padStart(2, "0");
@@ -209,11 +209,20 @@ export class InlineTaskWatcher {
     const ss = String(now.getSeconds()).padStart(2, "0");
     const timestamp = `${yyyy}-${MM}-${dd}-${HH}${mm}${ss}`;
 
+    let baseName: string;
     if (secondaryValue) {
       const safe = secondaryValue.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").trim();
-      return `${safe}-${timestamp}.md`;
+      baseName = `${safe}-${timestamp}`;
+    } else {
+      baseName = `task-${timestamp}`;
     }
-    return `task-${timestamp}.md`;
+
+    let fileName = `${baseName}.md`;
+    if (this.app.vault.getAbstractFileByPath(`${folder}/${fileName}`)) {
+      const suffix = Math.random().toString(36).substring(2, 5);
+      fileName = `${baseName}-${suffix}.md`;
+    }
+    return fileName;
   }
 
   private async createStub(task: TrackedTask, sourceFile: TFile): Promise<void> {
@@ -238,7 +247,7 @@ export class InlineTaskWatcher {
 
     const defaultBucket = s.buckets.find((b) => b.id === s.defaultBucketId)?.name ?? "";
     const today = new Date().toISOString().split("T")[0];
-    const fileName = this.generateStubFilename(task.secondaryValue);
+    const fileName = this.generateStubFilename(task.secondaryValue, folder);
     const filePath = `${folder}/${fileName}`;
 
     const content = [
