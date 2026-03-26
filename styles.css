@@ -1,0 +1,556 @@
+/* ============================================================
+   obsidian-tasks — styles.css
+   Clean, minimal task board. Frameless rows, subtle separators.
+   ============================================================ */
+
+/* ---- Root ---- */
+.ot-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  font-family: 'DM Sans', var(--font-text);
+  color: var(--text-normal);
+  background: var(--background-primary);
+  position: relative;
+}
+
+/* ---- Mode tabs (Focus / Board toggle) ---- */
+.ot-mode-tabs {
+  display: flex;
+  gap: 4px;
+  align-self: flex-end;
+  padding: 8px 12px 4px;
+}
+
+.ot-mode-tab {
+  font-size: 12px;
+  padding: 3px 10px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.ot-mode-tab:hover {
+  color: var(--text-normal);
+  background: var(--background-secondary);
+}
+
+.ot-mode-tab.active {
+  color: var(--text-normal);
+  background: var(--background-secondary);
+}
+
+/* ---- Settings icon ---- */
+.ot-view .ot-settings-icon {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  transition: color 150ms ease;
+}
+
+.ot-view .ot-settings-icon:hover {
+  color: var(--text-normal);
+}
+
+/* ============================================================
+   FOCUS MODE
+   ============================================================ */
+.ot-focus-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- Bucket tabs (horizontal, scrollable) ---- */
+.ot-bucket-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px 12px 0;
+  overflow-x: auto;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.ot-bucket-tabs::-webkit-scrollbar {
+  height: 0;
+}
+
+.ot-bucket-tab {
+  font-size: 13px;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+.ot-bucket-tab:hover {
+  color: var(--text-normal);
+}
+
+.ot-bucket-tab.active {
+  color: var(--text-normal);
+  border-bottom-color: var(--interactive-accent);
+}
+
+/* Focus-mode bucket fills full width and height */
+.ot-focus-container .ot-bucket {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  max-width: none;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.ot-focus-container .ot-bucket-header {
+  display: none;
+}
+
+.ot-focus-container .ot-bucket-tasks {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 4px;
+}
+
+.ot-focus-content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   BOARD MODE
+   ============================================================ */
+.ot-content.ot-board-container {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  overflow-x: auto;
+  height: 100%;
+  padding: 0 12px 12px;
+}
+
+.ot-board-container .ot-bucket {
+  flex: 1 1 0;
+  min-width: 220px;
+  max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.ot-board-container .ot-bucket-tasks {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ============================================================
+   BUCKET
+   ============================================================ */
+.ot-bucket-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  user-select: none;
+}
+
+.ot-bucket-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-normal);
+}
+
+.ot-bucket-count {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   ACCOUNT GROUP
+   ============================================================ */
+.ot-account-group {
+  border: 1px solid rgba(var(--text-normal-rgb, 0, 0, 0), 0.30);
+  background: rgba(var(--text-normal-rgb, 0, 0, 0), 0.08);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+.ot-account-group.collapsed .ot-account-tasks {
+  display: none;
+}
+
+.ot-account-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.02em;
+  padding: 5px 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ot-account-tasks {
+  padding: 0;
+}
+
+/* ============================================================
+   TASK ROW — frameless
+   ============================================================ */
+.ot-task-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 4px 10px 4px 16px !important;
+  gap: 6px;
+  border-bottom: 1px solid rgba(var(--background-modifier-border-rgb, 0, 0, 0), 0.03);
+  transition: opacity 300ms ease, height 200ms ease;
+  overflow: visible;
+}
+
+.ot-task-row:last-child {
+  border-bottom: none;
+}
+
+/* ---- Drag handle ---- */
+.ot-drag-handle {
+  display: none;
+  color: var(--text-faint);
+  cursor: grab;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+  padding-top: 1px;
+  user-select: none;
+}
+
+.ot-task-row:hover .ot-drag-handle {
+  display: block;
+}
+
+/* ---- Checkbox (SVG circle) ---- */
+.ot-checkbox {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.ot-checkbox svg {
+  width: 14px;
+  height: 14px;
+  stroke: var(--text-muted);
+  stroke-width: 1.5px;
+  fill: none;
+  opacity: 0.6;
+  transition: fill 200ms ease, stroke 200ms ease, opacity 200ms ease;
+}
+
+.ot-checkbox.checked svg {
+  fill: var(--interactive-accent);
+  stroke: var(--interactive-accent);
+}
+
+/* ---- Content ---- */
+.ot-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.ot-action {
+  font-size: 11px;
+  color: var(--text-normal);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.ot-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1.3;
+}
+
+.ot-source-icon {
+  font-size: 10px;
+  opacity: 0.5;
+  margin-left: 2px;
+}
+
+/* ============================================================
+   COMPLETION ANIMATION
+   ============================================================ */
+.ot-task-row.completing .ot-action {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+}
+
+.ot-task-row.completing {
+  opacity: 0.4;
+  transition: opacity 300ms ease;
+}
+
+.ot-task-row.done {
+  opacity: 0;
+  height: 0 !important;
+  padding-top: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  overflow: hidden;
+  transition: opacity 200ms ease, height 200ms ease 1.5s, padding 200ms ease 1.5s, border 0ms ease 1.5s;
+}
+
+/* ============================================================
+   DRAG & DROP
+   ============================================================ */
+.ot-task-row.dragging {
+  opacity: 0.4;
+}
+
+.ot-bucket-tasks.drag-over {
+  background: rgba(var(--interactive-accent-rgb, 0, 122, 255), 0.04);
+  border-radius: 4px;
+}
+
+.ot-drop-indicator {
+  height: 2px;
+  background: var(--interactive-accent);
+  border-radius: 1px;
+  margin: 0 12px;
+  pointer-events: none;
+}
+
+/* ============================================================
+   ADD TASK
+   ============================================================ */
+.ot-bucket-add {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: color 150ms ease;
+}
+
+.ot-bucket-add:hover {
+  color: var(--text-normal);
+}
+
+.ot-inline-input {
+  width: 100%;
+  font-size: 13px;
+  padding: 6px 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-normal);
+  font-family: 'DM Sans', var(--font-text);
+}
+
+.ot-inline-input::placeholder {
+  color: var(--text-faint);
+}
+
+/* ============================================================
+   COMPACT MODE
+   ============================================================ */
+.ot-view.compact .ot-task-row {
+  padding: 3px 10px;
+}
+
+.ot-view.compact .ot-action {
+  font-size: 12px;
+}
+
+.ot-view.compact .ot-meta {
+  font-size: 10px;
+}
+
+.ot-view.compact .ot-account-group {
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING (subtle)
+   ============================================================ */
+.ot-bucket-tasks::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ot-bucket-tasks::-webkit-scrollbar-thumb {
+  background: var(--background-modifier-border);
+  border-radius: 4px;
+}
+
+.ot-bucket-tasks::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.ot-board-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.ot-board-container::-webkit-scrollbar-thumb {
+  background: var(--background-modifier-border);
+  border-radius: 4px;
+}
+
+.ot-board-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.ot-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 200px;
+  gap: 12px;
+  color: var(--text-faint);
+  user-select: none;
+}
+
+.ot-empty-state svg,
+.ot-empty-state .ot-empty-icon {
+  width: 48px;
+  height: 48px;
+  opacity: 0.35;
+}
+
+.ot-empty-state span {
+  font-size: 13px;
+  text-align: center;
+  max-width: 240px;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   KEYBOARD FOCUS
+   ============================================================ */
+.ot-task-row:focus {
+  outline: 2px solid rgba(var(--interactive-accent-rgb, 0, 122, 255), 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.ot-task-row:focus-visible {
+  outline: 2px solid rgba(var(--interactive-accent-rgb, 0, 122, 255), 0.5);
+  outline-offset: 2px;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.ot-task-row:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================
+   TASK COUNT BADGE ON RIBBON
+   ============================================================ */
+.ot-ribbon-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 10px;
+  height: 10px;
+  padding: 0 3px;
+  border-radius: 10px;
+  background: var(--color-red, #e03e3e);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 10px;
+  text-align: center;
+  pointer-events: none;
+  box-sizing: content-box;
+}
+
+/* ============================================================
+   MOBILE IMPROVEMENTS
+   ============================================================ */
+@media (pointer: coarse) {
+  .ot-task-row {
+    min-height: 44px;
+    align-items: center;
+    padding: 8px 10px 8px 12px !important;
+  }
+
+  .ot-drag-handle {
+    display: none !important;
+  }
+
+  .ot-task-row:hover .ot-drag-handle {
+    display: none !important;
+  }
+
+  .ot-checkbox {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ot-checkbox svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ot-bucket-tab {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .ot-bucket-add {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+}
+
+/* ============================================================
+   INLINE CREATION — SECONDARY GROUP INPUT
+   ============================================================ */
+.ot-inline-group-input {
+  width: 100%;
+  font-size: 11px;
+  padding: 4px 12px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'DM Sans', var(--font-text);
+}
+
+.ot-inline-group-input::placeholder {
+  color: var(--text-faint);
+  font-style: italic;
+}
