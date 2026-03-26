@@ -84,7 +84,7 @@ export const DEFAULT_SETTINGS: TasksPluginSettings = {
 };
 
 /** View type identifier */
-export const TASKS_VIEW_TYPE = "obsidian-tasks-view";
+export const TASKS_VIEW_TYPE = "obsidian-task-manager-view";
 
 /** CSS class prefix */
 export const CLS = "ot";

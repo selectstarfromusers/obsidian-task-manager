@@ -1,6 +1,6 @@
 {
-  "id": "obsidian-tasks",
-  "name": "Tasks",
+  "id": "obsidian-task-manager",
+  "name": "Task Manager",
   "version": "0.1.0",
   "minAppVersion": "1.10.0",
   "description": "A clean, minimal task board with customizable buckets, secondary grouping, and inline task tracking.",

@@ -1,4 +1,4 @@
-# Tasks
+# Task Manager
 
 A clean, minimal task board for [Obsidian](https://obsidian.md). Create customizable buckets, group tasks by any frontmatter property, and track tasks inline from any note in your vault.
 
