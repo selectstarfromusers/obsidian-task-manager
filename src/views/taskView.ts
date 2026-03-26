@@ -139,7 +139,7 @@ export class TaskView extends ItemView {
         `<div class="${CLS}-empty-icon">\u2610</div>`,
         `<div class="${CLS}-empty-title">No tasks yet</div>`,
         `<div class="${CLS}-empty-hint">Add #task to any checkbox in your notes to see it here.</div>`,
-        `<div class="${CLS}-empty-hint">Example: - [ ] Send docs [[Bio-Techne]] #task</div>`,
+        `<div class="${CLS}-empty-hint">Example: - [ ] Send report [[Project Alpha]] #task</div>`,
       ].join("");
       contentArea.appendChild(emptyState);
       return;

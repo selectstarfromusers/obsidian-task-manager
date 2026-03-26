@@ -15,7 +15,7 @@ A clean, minimal task board for [Obsidian](https://obsidian.md). Create customiz
 
 - **Customizable buckets** -- Create as many buckets as you need with any name. Use them for an Eisenhower matrix, GTD stages, sprint columns, or any workflow that fits your thinking.
 - **Secondary grouping** -- Group tasks within each bucket by any frontmatter property (account, project, team, etc.). Groups appear as subtle, semi-transparent frames inside the bucket.
-- **Inline task tracking** -- Add `#task` to any checkbox in any note to surface it on the board. Assign a secondary group with a wikilink: `- [ ] Send docs [[Bio-Techne]] #task`
+- **Inline task tracking** -- Add `#task` to any checkbox in any note to surface it on the board. Assign a secondary group with a wikilink: `- [ ] Send docs [[Project Alpha]] #task`
 - **Bidirectional sync** -- Check off a task on the board or in the source note; both stay in sync.
 - **Drag-and-drop** -- Move tasks between buckets or reorder them within a bucket.
 - **Completion animation** -- Checked tasks get a strikethrough, fade out, and collapse smoothly.

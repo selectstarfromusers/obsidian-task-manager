@@ -30,7 +30,7 @@ export interface BucketGroup {
 
 /** Secondary grouping (e.g. by account) within a bucket */
 export interface SubGroup {
-  key: string;           // e.g. "Bio-Techne", or "" for ungrouped
+  key: string;           // e.g. "Acme Corp", or "" for ungrouped
   tasks: TaskItem[];
 }
 
