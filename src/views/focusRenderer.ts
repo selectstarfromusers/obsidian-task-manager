@@ -1,4 +1,4 @@
-import { BucketGroup, DisplayConfig, BucketConfig, CLS } from "../types";
+import { BucketGroup, DisplayConfig, CLS } from "../types";
 import { createBucket, BucketCallbacks } from "./bucketComponent";
 
 export interface FocusRendererConfig {

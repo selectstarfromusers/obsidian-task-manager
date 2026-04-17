@@ -18,8 +18,7 @@ export class TasksSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    // ── General ──────────────────────────────────────────────
-    containerEl.createEl("h2", { text: "General" });
+    new Setting(containerEl).setName("General").setHeading();
 
     new Setting(containerEl)
       .setName("Task folder")
@@ -61,8 +60,7 @@ export class TasksSettingTab extends PluginSettingTab {
           })
       );
 
-    // ── Buckets ──────────────────────────────────────────────
-    containerEl.createEl("h2", { text: "Buckets" });
+    new Setting(containerEl).setName("Buckets").setHeading();
 
     const bucketPropertySetting = new Setting(containerEl)
       .setName("Group by property")
@@ -87,7 +85,6 @@ export class TasksSettingTab extends PluginSettingTab {
       text: "Property names are case-sensitive in frontmatter. Use lowercase.",
     });
 
-    // Bucket list (custom DOM)
     const bucketSection = containerEl.createDiv({ cls: "tasks-bucket-list" });
     bucketSection.createEl("div", {
       text: "Buckets",
@@ -102,58 +99,54 @@ export class TasksSettingTab extends PluginSettingTab {
 
     this.plugin.settings.buckets.forEach((bucket, index) => {
       const row = listEl.createDiv({ cls: "tasks-bucket-row" });
-      row.style.display = "flex";
-      row.style.alignItems = "center";
-      row.style.gap = "6px";
-      row.style.marginBottom = "4px";
 
-      // Up arrow
       const upBtn = row.createEl("button", { text: "\u2191" });
       upBtn.setAttribute("aria-label", "Move up");
       upBtn.disabled = index === 0;
-      upBtn.addEventListener("click", async () => {
-        this.swapBuckets(index, index - 1);
-        await this.plugin.saveSettings();
-        this.display();
+      upBtn.addEventListener("click", () => {
+        void (async () => {
+          this.swapBuckets(index, index - 1);
+          await this.plugin.saveSettings();
+          this.display();
+        })();
       });
 
-      // Down arrow
       const downBtn = row.createEl("button", { text: "\u2193" });
       downBtn.setAttribute("aria-label", "Move down");
       downBtn.disabled = index === this.plugin.settings.buckets.length - 1;
-      downBtn.addEventListener("click", async () => {
-        this.swapBuckets(index, index + 1);
-        await this.plugin.saveSettings();
-        this.display();
+      downBtn.addEventListener("click", () => {
+        void (async () => {
+          this.swapBuckets(index, index + 1);
+          await this.plugin.saveSettings();
+          this.display();
+        })();
       });
 
-      // Name input
       const input = row.createEl("input", { type: "text" });
       input.value = bucket.name;
-      input.style.flex = "1";
-      input.addEventListener("change", async () => {
-        const newName = input.value.trim();
-        const duplicate = this.plugin.settings.buckets.some(
-          (b, i) => i !== index && b.name === newName
-        );
-        if (duplicate) {
-          new Notice("A bucket with that name already exists.");
-          input.value = bucket.name;
-          return;
-        }
-        bucket.name = newName;
-        await this.plugin.saveSettings();
+      input.addEventListener("change", () => {
+        void (async () => {
+          const newName = input.value.trim();
+          const duplicate = this.plugin.settings.buckets.some(
+            (b, i) => i !== index && b.name === newName
+          );
+          if (duplicate) {
+            new Notice("A bucket with that name already exists.");
+            input.value = bucket.name;
+            return;
+          }
+          bucket.name = newName;
+          await this.plugin.saveSettings();
+        })();
       });
 
-      // Delete button with confirmation
       const delBtn = row.createEl("button", { text: "\u00d7" });
       delBtn.setAttribute("aria-label", "Delete bucket");
       let confirmPending = false;
       let confirmTimeout: ReturnType<typeof setTimeout> | null = null;
-      delBtn.addEventListener("click", async () => {
+      delBtn.addEventListener("click", () => {
         if (!confirmPending) {
-          // First click: count tasks and show confirmation state
-          const taskCount = await this.countTasksInBucket(bucket);
+          const taskCount = this.countTasksInBucket(bucket);
           delBtn.textContent = `Confirm? (${taskCount} task${taskCount !== 1 ? "s" : ""})`;
           confirmPending = true;
           confirmTimeout = setTimeout(() => {
@@ -162,7 +155,6 @@ export class TasksSettingTab extends PluginSettingTab {
           }, 3000);
           return;
         }
-        // Second click: actually delete
         if (confirmTimeout) clearTimeout(confirmTimeout);
         this.plugin.settings.buckets.splice(index, 1);
         this.plugin.settings.buckets.forEach((b, i) => (b.sortOrder = i));
@@ -172,26 +164,30 @@ export class TasksSettingTab extends PluginSettingTab {
               ? this.plugin.settings.buckets[0].id
               : "";
         }
+        void (async () => {
+          await this.plugin.saveSettings();
+          this.display();
+        })();
+      });
+    });
+
+    const addBtn = bucketSection.createEl("button", {
+      text: "+ Add bucket",
+      cls: "tasks-bucket-add-btn",
+    });
+    addBtn.addEventListener("click", () => {
+      void (async () => {
+        const id = "bucket_" + Date.now().toString(36);
+        this.plugin.settings.buckets.push({
+          id,
+          name: "New bucket",
+          sortOrder: this.plugin.settings.buckets.length,
+        });
         await this.plugin.saveSettings();
         this.display();
-      });
+      })();
     });
 
-    // Add bucket button
-    const addBtn = bucketSection.createEl("button", { text: "+ Add bucket" });
-    addBtn.style.marginTop = "6px";
-    addBtn.addEventListener("click", async () => {
-      const id = "bucket_" + Date.now().toString(36);
-      this.plugin.settings.buckets.push({
-        id,
-        name: "New Bucket",
-        sortOrder: this.plugin.settings.buckets.length,
-      });
-      await this.plugin.saveSettings();
-      this.display();
-    });
-
-    // Default bucket dropdown
     new Setting(containerEl)
       .setName("Default bucket for new tasks")
       .setDesc("Bucket assigned to tasks that don't match any other.")
@@ -218,8 +214,7 @@ export class TasksSettingTab extends PluginSettingTab {
           })
       );
 
-    // ── Secondary Grouping ───────────────────────────────────
-    containerEl.createEl("h2", { text: "Secondary Grouping" });
+    new Setting(containerEl).setName("Secondary grouping").setHeading();
 
     new Setting(containerEl)
       .setName("Enable sub-groups")
@@ -265,8 +260,7 @@ export class TasksSettingTab extends PluginSettingTab {
         );
     }
 
-    // ── Display ──────────────────────────────────────────────
-    containerEl.createEl("h2", { text: "Display" });
+    new Setting(containerEl).setName("Display").setHeading();
 
     new Setting(containerEl)
       .setName("Show due date")
@@ -334,11 +328,10 @@ export class TasksSettingTab extends PluginSettingTab {
           })
       );
 
-    // ── Getting Started ──────────────────────────────────────
-    containerEl.createEl("h2", { text: "Getting Started" });
+    new Setting(containerEl).setName("Getting started").setHeading();
 
     containerEl.createEl("p", {
-      text: 'Add #task to any checkbox in your notes: - [ ] Do something #task',
+      text: "Add #task to any checkbox in your notes: - [ ] Do something #task",
       cls: "setting-item-description",
     });
     containerEl.createEl("p", {
@@ -361,11 +354,7 @@ export class TasksSettingTab extends PluginSettingTab {
     buckets.forEach((b, i) => (b.sortOrder = i));
   }
 
-  /**
-   * Count how many task files in the _Tasks/ folder have a bucket property
-   * matching the given bucket's name.
-   */
-  private async countTasksInBucket(bucket: BucketConfig): Promise<number> {
+  private countTasksInBucket(bucket: BucketConfig): number {
     const folder = this.plugin.settings.taskFolder;
     const property = this.plugin.settings.bucketProperty;
     const files = this.app.vault.getFiles().filter(

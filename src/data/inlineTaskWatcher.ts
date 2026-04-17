@@ -29,8 +29,8 @@ export class InlineTaskWatcher {
   }
 
   start(): void {
-    const ref = this.app.metadataCache.on("changed", (file, data, cache) => {
-      this.onFileChanged(file, cache);
+    const ref = this.app.metadataCache.on("changed", (file, _data, cache) => {
+      void this.onFileChanged(file, cache);
     });
     this.eventRefs.push(ref);
   }
@@ -168,7 +168,7 @@ export class InlineTaskWatcher {
     // Delete stubs that no longer have a matching #task line
     for (const stub of existingStubs) {
       if (!matchedStubs.has(stub.path)) {
-        await this.app.vault.delete(stub);
+        await this.app.fileManager.trashFile(stub);
       }
     }
   }

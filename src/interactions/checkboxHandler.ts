@@ -62,11 +62,12 @@ export class CheckboxHandler {
 
     // Step 4: write frontmatter after 1700ms
     timeouts.push(
-      window.setTimeout(async () => {
+      window.setTimeout(() => {
         this.pendingTimeouts.delete(key);
-        await this.callbacks.onToggleDone(task.file);
-        // Signal animation end so the view can resume re-renders
-        this.callbacks.onAnimationEnd?.();
+        void this.callbacks.onToggleDone(task.file).then(() => {
+          // Signal animation end so the view can resume re-renders
+          this.callbacks.onAnimationEnd?.();
+        });
       }, 1700)
     );
 
@@ -79,7 +80,7 @@ export class CheckboxHandler {
     rowElement.classList.remove("done", "completing");
     checkbox?.classList.remove("checked");
 
-    this.callbacks.onToggleDone(task.file);
+    void this.callbacks.onToggleDone(task.file);
   }
 
   private cancelPending(key: string): void {

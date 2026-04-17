@@ -542,6 +542,24 @@
 }
 
 /* ============================================================
+   SETTINGS — BUCKET LIST
+   ============================================================ */
+.tasks-bucket-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.tasks-bucket-row input[type="text"] {
+  flex: 1;
+}
+
+.tasks-bucket-add-btn {
+  margin-top: 6px;
+}
+
+/* ============================================================
    INLINE CREATION — SECONDARY GROUP INPUT
    ============================================================ */
 .ot-inline-group-input {

@@ -83,7 +83,7 @@ export class TaskStore {
     this.completingPaths.delete(path);
   }
 
-  async loadTasks(): Promise<TaskItem[]> {
+  loadTasks(): TaskItem[] {
     const settings = this.getSettings();
     const folder = settings.taskFolder;
     const bucketProp = settings.bucketProperty.toLowerCase();
@@ -210,7 +210,13 @@ export class TaskStore {
     const groupMap = new Map<string, TaskItem[]>();
 
     for (const task of tasks) {
-      const key = String(task[prop] ?? "");
+      const rawValue = task[prop];
+      const key =
+        typeof rawValue === "string"
+          ? rawValue
+          : typeof rawValue === "number" || typeof rawValue === "boolean"
+            ? String(rawValue)
+            : "";
       if (!groupMap.has(key)) {
         groupMap.set(key, []);
       }

@@ -4,14 +4,12 @@ import {
   CLS,
   TaskItem,
   TasksPluginSettings,
-  BucketGroup,
 } from "../types";
 import { TaskStore } from "../data/taskStore";
 import { FocusRenderer } from "./focusRenderer";
 import { BoardRenderer } from "./boardRenderer";
 import { DragManager } from "../interactions/dragManager";
 import { CheckboxHandler } from "../interactions/checkboxHandler";
-import { TaskRowCallbacks } from "./taskRow";
 import { BucketCallbacks } from "./bucketComponent";
 import { InlineCreator } from "../interactions/inlineCreator";
 
@@ -38,8 +36,12 @@ export class TaskView extends ItemView {
     this.currentMode = settings().defaultView;
 
     this.dragManager = new DragManager({
-      onMoveToBucket: (file, newBucket) => this.store.moveToBucket(file, newBucket),
-      onReorder: (file, order) => this.store.reorder(file, order),
+      onMoveToBucket: (file, newBucket) => {
+        void this.store.moveToBucket(file, newBucket);
+      },
+      onReorder: (file, order) => {
+        void this.store.reorder(file, order);
+      },
     });
 
     this.checkboxHandler = new CheckboxHandler({
@@ -90,7 +92,7 @@ export class TaskView extends ItemView {
     const contentArea = this.rootEl.createDiv({ cls: `${CLS}-content` });
 
     // Load tasks first, then render
-    await this.store.loadTasks();
+    this.store.loadTasks();
     this.renderView(contentArea);
 
     // React to data changes (debounced to avoid re-render storms)
@@ -135,12 +137,22 @@ export class TaskView extends ItemView {
       }
       const emptyState = document.createElement("div");
       emptyState.className = `${CLS}-empty-state`;
-      emptyState.innerHTML = [
-        `<div class="${CLS}-empty-icon">\u2610</div>`,
-        `<div class="${CLS}-empty-title">No tasks yet</div>`,
-        `<div class="${CLS}-empty-hint">Add #task to any checkbox in your notes to see it here.</div>`,
-        `<div class="${CLS}-empty-hint">Example: - [ ] Send report [[Project Alpha]] #task</div>`,
-      ].join("");
+      const iconEl = document.createElement("div");
+      iconEl.className = `${CLS}-empty-icon`;
+      iconEl.textContent = "\u2610";
+      emptyState.appendChild(iconEl);
+      const titleEl = document.createElement("div");
+      titleEl.className = `${CLS}-empty-title`;
+      titleEl.textContent = "No tasks yet";
+      emptyState.appendChild(titleEl);
+      const hint1 = document.createElement("div");
+      hint1.className = `${CLS}-empty-hint`;
+      hint1.textContent = "Add #task to any checkbox in your notes to see it here.";
+      emptyState.appendChild(hint1);
+      const hint2 = document.createElement("div");
+      hint2.className = `${CLS}-empty-hint`;
+      hint2.textContent = "Example: - [ ] Send report [[Project Alpha]] #task";
+      emptyState.appendChild(hint2);
       contentArea.appendChild(emptyState);
       return;
     }
@@ -211,7 +223,6 @@ export class TaskView extends ItemView {
         if (row) {
           // P0: Block re-renders during the completion animation
           this.animating = true;
-          const originalOnComplete = this.checkboxHandler.handleToggle.bind(this.checkboxHandler);
           this.checkboxHandler.handleToggle(task, row);
           // The checkbox handler uses a 1700ms delay; set a timeout to clear the flag
           setTimeout(() => {
@@ -223,11 +234,9 @@ export class TaskView extends ItemView {
         this.dragManager.handleDragStart(task, event);
       },
       onClick: (task: TaskItem) => {
-        // Open the source note or the task file in a new leaf
-        const targetPath = task.sourceNote || task.file.path;
         const file = this.app.vault.getAbstractFileByPath(task.file.path);
         if (file instanceof TFile) {
-          this.app.workspace.getLeaf("tab").openFile(file);
+          void this.app.workspace.getLeaf("tab").openFile(file);
         }
       },
       onAddTask: (bucketName: string) => {
@@ -243,7 +252,9 @@ export class TaskView extends ItemView {
         const menu = new Menu();
         for (const bucket of this.settings().buckets) {
           menu.addItem((item) =>
-            item.setTitle(bucket.name).onClick(() => this.store.moveToBucket(task.file, bucket.name))
+            item.setTitle(bucket.name).onClick(() => {
+              void this.store.moveToBucket(task.file, bucket.name);
+            })
           );
         }
         menu.showAtMouseEvent(event);
@@ -265,9 +276,10 @@ export class TaskView extends ItemView {
     this.inlineCreator.showInput(contentArea, bucketName, existingGroups);
   }
 
-  async onClose(): Promise<void> {
+  onClose(): Promise<void> {
     this.focusRenderer?.destroy();
     this.boardRenderer?.destroy();
     this.dragManager.destroy();
+    return Promise.resolve();
   }
 }

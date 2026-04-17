@@ -61,16 +61,17 @@ export class InlineCreator {
     wrapper.appendChild(datalist);
 
     // Keyboard handlers
-    const handleKeydown = async (e: KeyboardEvent) => {
+    const handleKeydown = (e: KeyboardEvent) => {
       if (e.key === "Enter" && actionInput.value.trim()) {
-        await this.createTask(
+        void this.createTask(
           actionInput.value.trim(),
           bucketName,
           groupInput.value.trim()
-        );
-        actionInput.value = "";
-        groupInput.value = "";
-        actionInput.focus();
+        ).then(() => {
+          actionInput.value = "";
+          groupInput.value = "";
+          actionInput.focus();
+        });
       } else if (e.key === "Escape") {
         wrapper.remove();
       }
