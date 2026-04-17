@@ -1,7 +1,7 @@
 {
-  "id": "obsidian-task-manager",
-  "name": "Task Manager",
-  "version": "0.1.0",
+  "id": "minimal-task-board",
+  "name": "Minimal Task Board",
+  "version": "0.1.1",
   "minAppVersion": "1.10.0",
   "description": "A clean, minimal task board with customizable buckets, secondary grouping, and inline task tracking.",
   "author": "Art Malanok",
