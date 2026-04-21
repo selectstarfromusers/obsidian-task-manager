@@ -63,7 +63,7 @@ export class TaskView extends ItemView {
     return "square-check-big";
   }
 
-  async onOpen(): Promise<void> {
+  onOpen(): Promise<void> {
     const { contentEl } = this;
     contentEl.empty();
 
@@ -105,6 +105,8 @@ export class TaskView extends ItemView {
         this.renderView(contentArea);
       }, 300);
     });
+
+    return Promise.resolve();
   }
 
   private setMode(mode: "focus" | "board"): void {
@@ -151,7 +153,7 @@ export class TaskView extends ItemView {
       emptyState.appendChild(hint1);
       const hint2 = document.createElement("div");
       hint2.className = `${CLS}-empty-hint`;
-      hint2.textContent = "Example: - [ ] Send report [[Project Alpha]] #task";
+      hint2.textContent = "Example: - [ ] send report [[project alpha]] #task";
       emptyState.appendChild(hint2);
       contentArea.appendChild(emptyState);
       return;

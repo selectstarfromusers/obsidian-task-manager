@@ -116,7 +116,7 @@ export default class TasksPlugin extends Plugin {
   private async activateView(): Promise<void> {
     const existing = this.app.workspace.getLeavesOfType(TASKS_VIEW_TYPE);
     if (existing.length > 0) {
-      this.app.workspace.revealLeaf(existing[0]);
+      await this.app.workspace.revealLeaf(existing[0]);
       return;
     }
 
@@ -125,7 +125,7 @@ export default class TasksPlugin extends Plugin {
       type: TASKS_VIEW_TYPE,
       active: true,
     });
-    this.app.workspace.revealLeaf(leaf);
+    await this.app.workspace.revealLeaf(leaf);
   }
 
   async loadSettings(): Promise<void> {

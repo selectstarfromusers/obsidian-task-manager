@@ -18,8 +18,6 @@ export class TasksSettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    new Setting(containerEl).setName("General").setHeading();
-
     new Setting(containerEl)
       .setName("Task folder")
       .setDesc("Vault folder where task notes are stored.")
@@ -73,7 +71,7 @@ export class TasksSettingTab extends PluginSettingTab {
             const newValue = value.toLowerCase().trim();
             if (newValue !== this.plugin.settings.bucketProperty) {
               new Notice(
-                "Changing the bucket property will affect how tasks are grouped. Existing tasks may appear in 'Unclassified' until their frontmatter is updated."
+                "Changing the bucket property will affect how tasks are grouped. Existing tasks may appear in 'unclassified' until their frontmatter is updated."
               );
             }
             this.plugin.settings.bucketProperty = newValue;
@@ -172,7 +170,7 @@ export class TasksSettingTab extends PluginSettingTab {
     });
 
     const addBtn = bucketSection.createEl("button", {
-      text: "+ Add bucket",
+      text: "Add bucket",
       cls: "tasks-bucket-add-btn",
     });
     addBtn.addEventListener("click", () => {
@@ -331,11 +329,11 @@ export class TasksSettingTab extends PluginSettingTab {
     new Setting(containerEl).setName("Getting started").setHeading();
 
     containerEl.createEl("p", {
-      text: "Add #task to any checkbox in your notes: - [ ] Do something #task",
+      text: "Add #task to any checkbox in your notes: - [ ] do something #task",
       cls: "setting-item-description",
     });
     containerEl.createEl("p", {
-      text: "Use [[GroupName]] to organize by the secondary grouping property.",
+      text: "Use [[group name]] to organize by the secondary grouping property.",
       cls: "setting-item-description",
     });
     containerEl.createEl("p", {

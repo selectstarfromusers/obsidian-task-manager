@@ -69,7 +69,7 @@ export function createBucket(
   // Add task button
   const addBtn = document.createElement("div");
   addBtn.className = `${CLS}-bucket-add`;
-  addBtn.textContent = "+ Add a task";
+  addBtn.textContent = "Add a task";
   addBtn.addEventListener("click", () => {
     callbacks.onAddTask(group.bucket.name);
   });
